@@ -99,7 +99,7 @@ public class MainApp {
             System.out.println("Прошло времени, мс: " + (finish - start));
 
             repository.getAll().forEach(
-                    it -> System.out.print(Arrays.toString(it) + " ")
+                    it -> System.out.print(it + " ")
             );
         }
     }

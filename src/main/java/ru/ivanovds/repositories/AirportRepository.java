@@ -1,6 +1,7 @@
 package ru.ivanovds.repositories;
 
 import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.exceptions.CsvException;
 import org.yaml.snakeyaml.Yaml;
 import ru.ivanovds.models.Airport;
@@ -12,12 +13,20 @@ import java.util.*;
 public class AirportRepository implements AirportInterface {
 
     private final String URL_DB;
+    private List airports;
+
 
     public AirportRepository() {
         try (InputStream inputStream = new FileInputStream("src/main/resources/application.yaml")) {
             Yaml yaml = new Yaml();
             Map<String, Object> data = yaml.load(inputStream);
             URL_DB = data.get("pathToFile").toString();
+
+            airports = new CsvToBeanBuilder(new FileReader(URL_DB))
+                    .withType(Airport.class)
+                    .build()
+                    .parse();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -46,16 +55,9 @@ public class AirportRepository implements AirportInterface {
     }
 
     @Override
-    public List<String[]> getAll() {
-        List<String[]> db;
-        try (CSVReader reader = new CSVReader(new FileReader(URL_DB))) {
-            db = reader.readAll();
+    public List getAll() {
 
-        } catch (IOException | CsvException e) {
-            throw new RuntimeException(e);
-        }
-
-        return db;
+        return airports;
     }
 
     private void print(String[] words) {
