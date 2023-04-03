@@ -1,14 +1,9 @@
 package ru.ivanovds;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import ru.ivanovds.repositories.AirportRepository;
+
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MainApp {
 
@@ -16,13 +11,19 @@ public class MainApp {
         if (scanner == null)
             scanner = new Scanner(System.in);
 
+        System.out.println("Введите фильтр");
         while (true) {
             if (scanner.hasNextLine()) {
-                String cmd = scanner.nextLine().replaceAll("\\s+", "");
+                String word = scanner.nextLine();
+                if (word.equals("!quit")) {
+                    return word;
+                }
+
+                String cmd = word.replaceAll("\\s+", "");
                 if (isValid(cmd)) {
                     return cmd;
                 } else {
-                    return "Неправилно введена команда, повторите еще раз";
+                    System.out.println("Неправильно введена команда, повторите еще раз");
                 }
             } else {
                scanner.next();
@@ -34,47 +35,72 @@ public class MainApp {
         if (cmd == null)
             return false;
 
-        Set<String> rl = Stream
-                .of("&", "||")
-                .collect(Collectors.toSet());
+        String[] expressions = cmd.split("(?<=&)|(?=&)|(?=\\|{2})|(?<=\\|{2})\\b");
 
-        String[] expressions = cmd.split("(?<=[\\|{2}])|(?=[\\|{3}])\\b");
-        System.out.println(Arrays.toString(expressions));
-        isValidRel(expressions);
+        return isValid(expressions);
+    }
+
+    private boolean isValid(String[] expressions) {
+        for (int i = 0; i < expressions.length; i = i + 2) {
+            String[] expression = expressions[i].split("(?=[<>=])|(?<=[<>=])");
+            return isValidRel(expression);
+        }
         return true;
     }
 
     private boolean isValidRel(String[] expressions) {
-        for (String expr :
-                expressions) {
-        }
+        for (int i = 0; i < expressions.length; i++) {
+            String word = expressions[i];
+            if (i % 2 == 0) {
+                boolean cmd = expressions[i].matches("column\\[\\d\\]");
 
-        return true;
-    }
+                if (word.matches("column\\[\\d+\\]")) {
+                    return true;
+                }
 
-    public static void inputDB() {
-        try (BufferedReader csvReader = new BufferedReader(new FileReader("src/main/resources/airports.csv"))) {
-            while (csvReader.readLine() != null) {
-                System.out.println(csvReader.readLine());
+                if (word.charAt(0) == '(') {
+                    return true;
+                }
+
+                if (word.charAt(word.length() - 1) == ')') {
+                    return true;
+                }
+            } else {
+                if (word.matches("&")) {
+                    return true;
+                } else return word.matches("//|");
             }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
         }
+
+        return false;
     }
+
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
+        AirportRepository repository = new AirportRepository();
         MainApp mainApp = new MainApp();
 
         while (true) {
-            System.out.println("Введите фильтр");
             String cmd = mainApp.inputCmd(scan);
-            System.out.println("Введите имя аэропорта");
-
             if (cmd.equals("!quit")) {
                 break;
             }
-        }
 
+            System.out.println("Введите начало имени аэропорта");
+            String nameAirport = scan.nextLine();
+            if (nameAirport.equals("!quit")) {
+                break;
+            }
+
+            long start = System.currentTimeMillis();
+            repository.findAirport(nameAirport);
+            long finish = System.currentTimeMillis();
+            System.out.println("Прошло времени, мс: " + (finish - start));
+
+            repository.getAll().forEach(
+                    it -> System.out.print(Arrays.toString(it) + " ")
+            );
+        }
     }
 }
