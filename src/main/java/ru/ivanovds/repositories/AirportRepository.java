@@ -2,6 +2,7 @@ package ru.ivanovds.repositories;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import org.yaml.snakeyaml.Yaml;
 import ru.ivanovds.models.Airport;
 import ru.ivanovds.repositories.interfaces.AirportInterface;
 
@@ -13,7 +14,13 @@ public class AirportRepository implements AirportInterface {
     private final String URL_DB;
 
     public AirportRepository() {
-        URL_DB = "src/main/resources/airports.csv";
+        try (InputStream inputStream = new FileInputStream("src/main/resources/application.yaml")) {
+            Yaml yaml = new Yaml();
+            Map<String, Object> data = yaml.load(inputStream);
+            URL_DB = data.get("pathToFile").toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
