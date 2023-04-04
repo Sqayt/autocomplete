@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface AirportInterface {
 
-    List<String[]> getAll();
+    List<Airport> getAll();
 
-    Airport findAirport(String nameCity);
+    List<Airport> findAirport(String nameCity);
 }

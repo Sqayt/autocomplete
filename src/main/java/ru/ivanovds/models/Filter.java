@@ -1,49 +1,69 @@
 package ru.ivanovds.models;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Stream;
+
+@Data
 public class Filter {
+    Scanner scanner = new Scanner(System.in);
 
     private String cmd;
     private List<String> cmds = new ArrayList<>();
 
-    public Filter(String filter) {
-        setCmd(filter);
-    }
+    public String inputFilter() {
+        System.out.println("Введите фильтр");
+        while (true) {
+            if (scanner.hasNextLine()) {
+                String filter = scanner.nextLine();
+                if (filter.equals("!quit")) {
+                    return filter;
+                }
 
-    public void addCmd() {
-
-    }
-
-    public String getCmd() {
-        return cmd;
-    }
-
-    public void setCmd(String cmd) {
-        this.cmd = cmd;
-    }
-
-    public void findSymb(String cmd) {
-        String filter = cmd.replaceAll("\\s+", "");
-        String[] filters = filter.split("");
-
-        // Псевдо стек
-        int res = 0;
-        for (String s : filters) {
-            if (s.equals("(")) {
-                res++;
-            } else if (s.equals(")")) {
-                res--;
-            }
-
-            if (res > 0) {
-                cmds.add(s);
-            }
-
-            if (res < 0) {
-                break;
+                filter = filter.replaceAll("\\s+","");
+                filter = filter.replaceAll("[()]", "");
+                String[] filters = filter.split("(?<=&)|(?=&)|(?=\\|{2})|(?<=\\|{2})\\b");
+                if (isValidFilter(filters)) {
+                    return filter;
+                }
             }
         }
+    }
+
+    public boolean isValidFilter(String[] filters) {
+        boolean isValid = true;
+        for (int i = 0; i < filters.length; i++) {
+            if (i % 2 == 0) {
+                isValidRelationship(filters[i]);
+            } else {
+                if (!filters[i].matches("&") || !filters[i].matches("[|]")) {
+                    isValid = false;
+                }
+            }
+        }
+        if (filters[filters.length - 1].matches("&") || filters[filters.length - 1].matches("[|]")) {
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    public boolean isValidRelationship(String filter) {
+        String[] filters = filter.split("(?=[<>=])|(?<=[<>=])");
+
+        if (!filters[0].matches("column\\[\\d+]")) {
+            return false;
+        }
+        if (filters[1].matches("<")) {
+            if (filters[2].matches(">")) {
+                return true;
+            }
+        }
+
+        return filters[1].matches("=|<>|<|>");
     }
 }

@@ -1,8 +1,11 @@
 package ru.ivanovds;
 
+import ru.ivanovds.models.Airport;
+import ru.ivanovds.models.Filter;
 import ru.ivanovds.repositories.AirportRepository;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class MainApp {
@@ -41,7 +44,7 @@ public class MainApp {
     }
 
     private boolean isValid(String[] expressions) {
-        for (int i = 0; i < expressions.length; i = i + 2) {
+        for (int i = 0; i < expressions.length; ) {
             String[] expression = expressions[i].split("(?=[<>=])|(?<=[<>=])");
             return isValidRel(expression);
         }
@@ -80,12 +83,10 @@ public class MainApp {
         Scanner scan = new Scanner(System.in);
         AirportRepository repository = new AirportRepository();
         MainApp mainApp = new MainApp();
+        Filter filter = new Filter();
 
         while (true) {
-            String cmd = mainApp.inputCmd(scan);
-            if (cmd.equals("!quit")) {
-                break;
-            }
+            System.out.println(filter.inputFilter());
 
             System.out.println("Введите начало имени аэропорта");
             String nameAirport = scan.nextLine();
@@ -94,13 +95,11 @@ public class MainApp {
             }
 
             long start = System.currentTimeMillis();
-            repository.findAirport(nameAirport);
+            List<Airport> airports = repository.findAirport(nameAirport);
             long finish = System.currentTimeMillis();
-            System.out.println("Прошло времени, мс: " + (finish - start));
-
-            repository.getAll().forEach(
-                    it -> System.out.print(it + " ")
-            );
+            airports.forEach(System.out::println);
+            System.out.println("Количество найденых строк: " + airports.size() +
+                    " Время, затраченное на поиск: " + (finish - start) + " мс");
         }
     }
 }

@@ -1,10 +1,9 @@
 package ru.ivanovds.repositories;
 
-import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.exceptions.CsvException;
 import org.yaml.snakeyaml.Yaml;
 import ru.ivanovds.models.Airport;
+import ru.ivanovds.models.Filter;
 import ru.ivanovds.repositories.interfaces.AirportInterface;
 
 import java.io.*;
@@ -12,58 +11,51 @@ import java.util.*;
 
 public class AirportRepository implements AirportInterface {
 
-    private final String URL_DB;
-    private List airports;
-
+    private String URL_DB;
+    private List<Airport> airports;
 
     public AirportRepository() {
         try (InputStream inputStream = new FileInputStream("src/main/resources/application.yaml")) {
             Yaml yaml = new Yaml();
             Map<String, Object> data = yaml.load(inputStream);
+
             URL_DB = data.get("pathToFile").toString();
-
-            airports = new CsvToBeanBuilder(new FileReader(URL_DB))
-                    .withType(Airport.class)
-                    .build()
-                    .parse();
-
+            init();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            URL_DB = "src/main/resources/airports.csv";
+            System.err.println(e.getMessage());
         }
+
+    }
+
+    private void init() throws IOException {
+        airports = new CsvToBeanBuilder(new FileReader(URL_DB))
+                .withType(Airport.class)
+                .build()
+                .parse();
+        airports.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+    }
+
+    public List<Airport> findAirport(String nameAirport, Filter... filters) {
+
+        return new ArrayList<>();
     }
 
     @Override
-    public Airport findAirport(String nameAirport) {
-        try (CSVReader reader = new CSVReader(new FileReader(URL_DB))) {
-            int count = 0;
-            List<String[]> r = reader.readAll();
+    public List<Airport> findAirport(String nameAirport) {
+        List<Airport> airportsResult = new ArrayList<>();
 
-            for (String[] word : r) {
-                if (word[1].matches(nameAirport + ".+")) {
-                    print(word);
-                    count++;
-                }
+        for (Airport airport : airports) {
+            if (airport.getName().matches(nameAirport + ".+")) {
+                airportsResult.add(airport);
             }
-
-            System.out.println(count);
-
-        } catch (IOException | CsvException e) {
-            throw new RuntimeException(e);
         }
 
-        return new Airport();
+        return airportsResult;
     }
 
     @Override
-    public List getAll() {
-
+    public List<Airport> getAll() {
         return airports;
-    }
-
-    private void print(String[] words) {
-        for (String word : words) {
-            System.out.print(word + " ");
-        }
-        System.out.println();
     }
 }
