@@ -3,7 +3,7 @@ package ru.ivanovds.repositories;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.yaml.snakeyaml.Yaml;
 import ru.ivanovds.models.Airport;
-import ru.ivanovds.models.Filter;
+import ru.ivanovds.utils.Filter;
 import ru.ivanovds.repositories.interfaces.AirportInterface;
 
 import java.io.*;
@@ -33,25 +33,24 @@ public class AirportRepository implements AirportInterface {
                 .withType(Airport.class)
                 .build()
                 .parse();
+
         airports.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
-    }
-
-    public List<Airport> findAirport(String nameAirport, Filter... filters) {
-
-        return new ArrayList<>();
     }
 
     @Override
     public List<Airport> findAirport(String nameAirport) {
         List<Airport> airportsResult = new ArrayList<>();
-
-        for (Airport airport : airports) {
-            if (airport.getName().matches(nameAirport + ".+")) {
-                airportsResult.add(airport);
+        try {
+            for (Airport airport : airports) {
+                if (airport.getName().matches(nameAirport + ".+")) {
+                    airportsResult.add(airport);
+                }
             }
-        }
 
-        return airportsResult;
+            return airportsResult;
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 
     @Override

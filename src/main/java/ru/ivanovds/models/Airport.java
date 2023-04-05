@@ -28,10 +28,10 @@ public class Airport {
     private double coordinateX;
 
     @CsvBindByPosition(position = 7)
-    private double CoordinatesY;
+    private double coordinatesY;
 
     @CsvBindByPosition(position = 8)
-    private String value;
+    private int value;
 
     @CsvBindByPosition(position = 9)
     private String valueTwo;
@@ -47,4 +47,49 @@ public class Airport {
 
     @CsvBindByPosition(position = 13)
     private String help;
+
+    @Override
+    public String toString() {
+        return "\"" +
+                name +
+                "\"[" +
+                id +
+                ", " +
+                "\"" +
+                name +
+                "\", " +
+                "\"" +
+                city +
+                "\", " +
+                "\"" +
+                fromCity +
+                "\", " +
+                "\"" +
+                key +
+                "\", " +
+                "\"" +
+                keyFrom +
+                "\", " +
+                coordinateX +
+                ", " +
+                coordinatesY +
+                ", " +
+                value +
+                ", " +
+                "\"" +
+                valueTwo +
+                "\", " +
+                "\"" +
+                flag +
+                "\", " +
+                "\"" +
+                route +
+                "\", " +
+                "\"" +
+                type +
+                "\", " +
+                "\"" +
+                help +
+                "\"]";
+    }
 }
