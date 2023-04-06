@@ -4,6 +4,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import org.yaml.snakeyaml.Yaml;
 import ru.ivanovds.models.Airport;
 import ru.ivanovds.repositories.interfaces.AirportInterface;
+import ru.ivanovds.service.AirportService;
 
 import java.io.*;
 import java.util.*;
@@ -39,10 +40,13 @@ public class AirportRepository implements AirportInterface {
     @Override
     public List<Airport> findAirport(String nameAirport, List<String[]> cmd) {
         List<Airport> airportsResult = new ArrayList<>();
+
         try {
             for (Airport airport: airports) {
-                if (airport.getName().matches(nameAirport + ".+")) {
-                    airportsResult.add(airport);
+                for (String[] cmds: cmd) {
+                    if (airport.getName().matches(nameAirport + ".+") && AirportService.parse(cmds, airport)) {
+                        airportsResult.add(airport);
+                    }
                 }
             }
 

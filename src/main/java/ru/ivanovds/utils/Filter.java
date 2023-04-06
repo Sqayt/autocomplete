@@ -2,8 +2,8 @@ package ru.ivanovds.utils;
 
 import java.util.Scanner;
 
-public class Filter {
-    Scanner scanner = new Scanner(System.in);
+public final class Filter {
+    private final Scanner scanner = new Scanner(System.in);
 
     public String inputFilter() {
         System.out.println("Введите фильтр");

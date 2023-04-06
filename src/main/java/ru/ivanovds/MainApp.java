@@ -15,20 +15,15 @@ public class MainApp {
         Scanner scan = new Scanner(System.in);
         AirportRepository repository = new AirportRepository();
         Filter filters = new Filter();
-        Cmd cmd = new Cmd();
+        Cmd cmd = Cmd.getInstance();
+
+        String a = "abc";
+        String b = "bca";
+        System.out.println(b.compareTo(a));
 
         while (true) {
             String filter = filters.inputFilter();
             cmd.setCommands(filter);
-            cmd.getCommands().forEach(
-                    it -> {
-                        Stream.of(it).forEach(
-                                el -> System.out.print(el + " ")
-                        );
-                        System.out.println();
-                    }
-            );
-            cmd.clearFilterDB();
             System.out.println("Введите начало имени аэропорта");
             String nameAirport = scan.nextLine();
             if (nameAirport.equals("!quit")) {
@@ -39,6 +34,7 @@ public class MainApp {
             long start = System.currentTimeMillis();
             List<Airport> airports = repository.findAirport(nameAirport, cmd.getCommands());
             long finish = System.currentTimeMillis();
+            cmd.clearFilterDB();
             airports.forEach(System.out::println);
             System.out.println("Количество найденых строк: " + airports.size() +
                     " Время, затраченное на поиск: " + (finish - start) + " мс");
