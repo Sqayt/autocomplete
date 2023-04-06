@@ -3,17 +3,16 @@ package ru.ivanovds.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cmd {
+public class CmdSingleton {
     private final List<String[]> commands = new ArrayList<>();
 
-    public static Cmd cmd;
+    public static CmdSingleton cmd;
 
-    private Cmd() {
-    }
+    private CmdSingleton () {}
 
-    public static Cmd getInstance() {
+    public static CmdSingleton getInstance() {
         if (cmd == null) {
-            cmd = new Cmd();
+            cmd = new CmdSingleton();
         }
 
         return cmd;

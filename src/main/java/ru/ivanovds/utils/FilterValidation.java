@@ -2,7 +2,7 @@ package ru.ivanovds.utils;
 
 import java.util.Scanner;
 
-public final class Filter {
+public final class FilterValidation {
     private final Scanner scanner = new Scanner(System.in);
 
     public String inputFilter() {
@@ -28,6 +28,9 @@ public final class Filter {
     }
 
     private boolean isValidFilter(String[] filters) {
+        if (filters == null)
+            return false;
+
         boolean isValid = true;
         for (int i = 0; i < filters.length; i++) {
             if (i % 2 == 0) {
@@ -46,6 +49,9 @@ public final class Filter {
     }
 
     private boolean isValidRelationship(String filter) {
+        if (filter == null)
+            return false;
+
         String[] filters = filter.split("(?=[<>=])|(?<=[<>=])");
 
         try {

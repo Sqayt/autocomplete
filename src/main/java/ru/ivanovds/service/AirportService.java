@@ -2,14 +2,18 @@ package ru.ivanovds.service;
 
 import ru.ivanovds.models.Airport;
 
-public class AirportService {
+public final class AirportService {
 
     private AirportService() {
     }
 
     public static boolean parse(String[] array, Airport airport) {
-        if (array.length <= 1) {
+        if (array == null) {
+            return false;
+        }
 
+        if (array.length <= 1) {
+        //TODO Доделать реализацию (,),&,||
         }
         try {
             switch (array[0]) {
@@ -66,6 +70,10 @@ public class AirportService {
     }
 
     private static boolean convert(Long el1, String el2, String el3) throws Exception {
+        if (el1 == null || el2 == null || el3 == null) {
+            throw new Exception();
+        }
+
         if (el2.equals("<")) return el1 < Long.parseLong(el3);
         if (el2.equals(">")) return el1 > Long.parseLong(el3);
         if (el2.equals("=")) return el1 == Long.parseLong(el3);
@@ -74,6 +82,10 @@ public class AirportService {
     }
 
     private static boolean convert(Double el1, String el2, String el3) throws Exception {
+        if (el1 == null || el2 == null || el3 == null) {
+            throw new Exception();
+        }
+
         if (el2.equals("<")) return el1 < Long.parseLong(el3);
         if (el2.equals(">")) return el1 > Long.parseLong(el3);
         if (el2.equals("=")) return el1 == Long.parseLong(el3);
@@ -82,6 +94,10 @@ public class AirportService {
     }
 
     private static boolean convert(String el1, String el2, String el3) throws Exception {
+        if (el1 == null || el2 == null || el3 == null) {
+            throw new Exception();
+        }
+
         if (el2.equals("<")) return el1.compareTo(el3) >= 0;
         if (el2.equals(">")) return el1.compareTo(el3) <= 0;
         if (el2.equals("=")) return el1.compareTo(el3) == 0;

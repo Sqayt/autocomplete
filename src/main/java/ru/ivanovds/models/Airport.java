@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class Airport {
-
     @CsvBindByPosition(position = 0)
     private Long id;
 

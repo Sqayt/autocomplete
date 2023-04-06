@@ -10,7 +10,6 @@ import java.io.*;
 import java.util.*;
 
 public class AirportRepository implements AirportInterface {
-
     private String URL_DB;
     private List<Airport> airports;
 
@@ -38,13 +37,13 @@ public class AirportRepository implements AirportInterface {
     }
 
     @Override
-    public List<Airport> findAirport(String nameAirport, List<String[]> cmd) {
+    public List<Airport> findAirport(String nameAirport, List<String[]> cmds) {
         List<Airport> airportsResult = new ArrayList<>();
 
         try {
             for (Airport airport: airports) {
-                for (String[] cmds: cmd) {
-                    if (airport.getName().matches(nameAirport + ".+") && AirportService.parse(cmds, airport)) {
+                for (String[] cmd: cmds) {
+                    if (airport.getName().matches(nameAirport + ".+") && AirportService.parse(cmd, airport)) {
                         airportsResult.add(airport);
                     }
                 }
