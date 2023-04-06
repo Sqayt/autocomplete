@@ -15,9 +15,10 @@ public class App {
         FilterValidation filters = new FilterValidation();
         CmdSingleton cmd = CmdSingleton.getInstance();
 
+        String filter = filters.inputFilter();
+        cmd.setCommands(filter);
+
         while (true) {
-            String filter = filters.inputFilter();
-            cmd.setCommands(filter);
             System.out.println("Введите начало имени аэропорта");
             String nameAirport = scan.nextLine();
             if (nameAirport.equals("!quit")) {
@@ -28,7 +29,6 @@ public class App {
             long start = System.currentTimeMillis();
             List<Airport> airports = repository.findAirport(nameAirport, cmd.getCommands());
             long finish = System.currentTimeMillis();
-            cmd.clearFilterDB();
             airports.forEach(System.out::println);
             System.out.println("Количество найденых строк: " + airports.size() +
                     " Время, затраченное на поиск: " + (finish - start) + " мс");

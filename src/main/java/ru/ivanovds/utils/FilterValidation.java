@@ -1,9 +1,13 @@
 package ru.ivanovds.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Scanner;
 
 public final class FilterValidation {
     private final Scanner scanner = new Scanner(System.in);
+    private static final Logger logger = LoggerFactory.getLogger(FilterValidation.class);
 
     public String inputFilter() {
         System.out.println("Введите фильтр");
@@ -66,6 +70,7 @@ public final class FilterValidation {
 
             return filters[1].matches("=|<>|<|>") && !filters[2].matches("=|<>|<|>");
         } catch (IndexOutOfBoundsException e) {
+            logger.error(e.getMessage());
             return false;
         }
     }

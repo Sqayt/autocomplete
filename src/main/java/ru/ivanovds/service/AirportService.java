@@ -13,7 +13,7 @@ public final class AirportService {
         }
 
         if (array.length <= 1) {
-        //TODO Доделать реализацию (,),&,||
+
         }
         try {
             switch (array[0]) {
@@ -65,7 +65,7 @@ public final class AirportService {
             }
         } catch (Exception e) {
             System.out.println("Неправильно введен фильтр");
-            return false;
+            return true;
         }
     }
 

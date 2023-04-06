@@ -1,6 +1,8 @@
 package ru.ivanovds.repositories;
 
 import com.opencsv.bean.CsvToBeanBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import ru.ivanovds.models.Airport;
 import ru.ivanovds.repositories.interfaces.AirportInterface;
@@ -12,6 +14,8 @@ import java.util.*;
 public class AirportRepository implements AirportInterface {
     private String URL_DB;
     private List<Airport> airports;
+
+    private static final Logger logger = LoggerFactory.getLogger(AirportRepository.class);
 
     public AirportRepository() {
         try (InputStream inputStream = new FileInputStream("src/main/resources/application.yaml")) {
@@ -51,7 +55,12 @@ public class AirportRepository implements AirportInterface {
 
             return airportsResult;
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    public List<Airport> getAll() {
+        return airports;
     }
 }
