@@ -3,7 +3,6 @@ package ru.ivanovds.repositories;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.yaml.snakeyaml.Yaml;
 import ru.ivanovds.models.Airport;
-import ru.ivanovds.utils.Filter;
 import ru.ivanovds.repositories.interfaces.AirportInterface;
 
 import java.io.*;
@@ -38,10 +37,10 @@ public class AirportRepository implements AirportInterface {
     }
 
     @Override
-    public List<Airport> findAirport(String nameAirport) {
+    public List<Airport> findAirport(String nameAirport, List<String[]> cmd) {
         List<Airport> airportsResult = new ArrayList<>();
         try {
-            for (Airport airport : airports) {
+            for (Airport airport: airports) {
                 if (airport.getName().matches(nameAirport + ".+")) {
                     airportsResult.add(airport);
                 }
@@ -51,10 +50,5 @@ public class AirportRepository implements AirportInterface {
         } catch (Exception e) {
             return new ArrayList<>();
         }
-    }
-
-    @Override
-    public List<Airport> getAll() {
-        return airports;
     }
 }

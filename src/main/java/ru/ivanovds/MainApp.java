@@ -1,34 +1,43 @@
 package ru.ivanovds;
 
 import ru.ivanovds.models.Airport;
+import ru.ivanovds.models.Cmd;
 import ru.ivanovds.utils.Filter;
 import ru.ivanovds.repositories.AirportRepository;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class MainApp {
-
-    /*
-        (column[1]> 10 & (column[2] = 3 || column[10]=30)) || ( column[3] = 'BCA' || column[4]<>'ACB')
-     */
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         AirportRepository repository = new AirportRepository();
-        Filter filter = new Filter();
+        Filter filters = new Filter();
+        Cmd cmd = new Cmd();
 
         while (true) {
-            String cmd = filter.inputFilter();
-
+            String filter = filters.inputFilter();
+            cmd.setCommands(filter);
+            cmd.getCommands().forEach(
+                    it -> {
+                        Stream.of(it).forEach(
+                                el -> System.out.print(el + " ")
+                        );
+                        System.out.println();
+                    }
+            );
+            cmd.clearFilterDB();
             System.out.println("Введите начало имени аэропорта");
             String nameAirport = scan.nextLine();
             if (nameAirport.equals("!quit")) {
                 break;
             }
 
+
             long start = System.currentTimeMillis();
-            List<Airport> airports = repository.findAirport(nameAirport);
+            List<Airport> airports = repository.findAirport(nameAirport, cmd.getCommands());
             long finish = System.currentTimeMillis();
             airports.forEach(System.out::println);
             System.out.println("Количество найденых строк: " + airports.size() +

@@ -60,7 +60,6 @@ public class Filter {
 
             return filters[1].matches("=|<>|<|>") && !filters[2].matches("=|<>|<|>");
         } catch (IndexOutOfBoundsException e) {
-
             return false;
         }
     }
